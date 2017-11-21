@@ -14,7 +14,6 @@ init_pushbuttons:
 	movia r9, 0xF				# Enable interrrupt mask = 1111
 	stwio r9, 8(r8)  		# Enable interrupts on pushbuttons 1,2, and 3
 	stwio r9, 12(r8)		# Clear edge capture register to prevent unexpected interrupt
-
 	ret
 
 .global init_lego
@@ -34,3 +33,4 @@ init_lego:
 
   movia r10, 0xFFFFFFFF			 # Clear the edge register
   stwio r10, 12(r8)
+	ret

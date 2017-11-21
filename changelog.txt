@@ -1,6 +1,7 @@
 ### Nov 21st ###
 Paulo: 
  - Implemented the code to launch a projectile
+ - Modified the timer to accept an input
 
 Musa: 
  - Implemented steering the launcher

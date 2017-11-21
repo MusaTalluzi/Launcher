@@ -1,8 +1,10 @@
-.equ TIMER1, 0xFF202000 
+.equ TIMER1, 0xFF202000
 .equ HEX0, 0xFF200020
 .equ ADDR_PUSHBUTTONS, 0xFF200050
 
+# Interrupt service routine starts here at 0x20
 .section .exceptions, "ax"
+<<<<<<< HEAD
 	/* Save registers to enable nested interrupts */
 	addi sp, sp, -16
 	stw et, 0(sp)

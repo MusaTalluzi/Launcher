@@ -18,7 +18,6 @@ _start:
 	movia r5, HEX0
 	call display
 
-	#call init_timer
 	call init_pushbuttons
 	call init_lego
 

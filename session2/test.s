@@ -1,11 +1,17 @@
 /* Test timer, pushbuttons and hex display are working */
 .equ IRQ_PUSHBUTTONS, 0x02
+.equ IRQ_TIMER1, 0x01
 .equ HEX0, 0xFF200020
 
 .global _start
 _start:
+	movia sp, 0x04000000		# Initialize stack
+	call init_pushbuttons
+	call init_lego
+	call init_timer
+
 	rdctl r16, ctl3
-	#ori r16, r16, 1				# Set IRQ0 to enable TIMER interrupts
+	ori r16, r16, IRQ_TIMER1		# Set IRQ0 to enable TIMER interrupts
 	ori r16, r16, IRQ_PUSHBUTTONS	# Set IRQ1 to enable PUSH_BUTTONS interrupts
 	wrctl ctl3, r16					# Enable previous interrupts
 
@@ -17,9 +23,6 @@ _start:
 	add r4, r16, r0 	# Display content of r16 at HEX0
 	movia r5, HEX0
 	call display
-
-	call init_pushbuttons
-	call init_lego
 
 	movi r17, 5
 

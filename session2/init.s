@@ -5,8 +5,11 @@
 # --- LEGO CONTROLLER --- #
 .equ ADDR_JP2, 			0xFF200070	# Address GPIO JP2
 .equ ADDR_JP2_IRQ, 	0x1000   		# IRQ line for GPIO JP2 (IRQ12)
-.equ STATE_MODE, 		0xFADFFFFE
+.equ STATE_MODE, 		0xFADFFFFF
 .equ ADDR_JP2_EDGE, 0xFF20007C  # Address Edge Capture register GPIO JP2
+
+# --- TIMER --- *
+.equ TIMER1, 0xFF202000
 
 .global init_pushbuttons
 init_pushbuttons:
@@ -33,4 +36,10 @@ init_lego:
 
   movia r10, 0xFFFFFFFF			 # Clear the edge register
   stwio r10, 12(r8)
+	ret
+
+.global init_timer
+init_timer:
+	movia r8, TIMER1
+	stwio r0, 0(r8) 		# Clear timeout bit
 	ret

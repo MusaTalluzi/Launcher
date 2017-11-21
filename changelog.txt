@@ -1,0 +1,19 @@
+### Nov 21st ###
+Paulo: 
+ - Implemented the code to launch a projectile
+
+Musa: 
+ - Implemented steering the launcher
+ - Enabled nested interrupts
+
+### Nov 20th ###
+Paulo: 
+ - Built the launcher and control mechanisms
+ - Began work on implementing the lego controller
+ - Finalized the project proposal
+
+### Nov 14th ###
+Paulo & Musa: 
+ - Implemented the display controller
+ - Set up the timer + interrupts
+ - Set up the button control + interrupts

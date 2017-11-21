@@ -2,6 +2,7 @@
 Paulo: 
  - Implemented the code to launch a projectile
  - Modified the timer to accept an input
+ - Implemented ISR handling for the timer
 
 Musa: 
  - Implemented steering the launcher

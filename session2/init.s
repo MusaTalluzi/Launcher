@@ -1,7 +1,3 @@
-# --- TIMER --- #
-.equ TIMER1, 0xFF202000
-.equ TIME_PERIOD, 1 << 27		# Almost 1.28s
-
 # --- BUTTONS --- #
 .equ IRQ_PUSHBUTTONS, 0x02
 .equ ADDR_PUSHBUTTONS, 0xFF200050
@@ -11,19 +7,6 @@
 .equ ADDR_JP2_IRQ, 	0x1000   		# IRQ line for GPIO JP2 (IRQ12)
 .equ STATE_MODE, 		0xFADFFFFE
 .equ ADDR_JP2_EDGE, 0xFF20007C  # Address Edge Capture register GPIO JP2
-
-.global init_timer
-init_timer:
-	movia r8, TIMER1						# Store base address of timer in r8
-	movi r9, %hi(TIME_PERIOD)		# r9 contains upper16 bits of delay
-	movi r10, %lo(TIME_PERIOD)	# r10 contains lower16 bits of delay
-	stwio r10, 8(r8)			# Store lower16 bits of delay in base+8
-	stwio r9, 12(r8)			# Store high16 bits of delay in base+12
-	stwio r0, 0(r10) 			# clear timeout bit, just in case
-	movi r9, 7						# start timer, continuous, interrupt enabled (least 3 significant bits all set to 1)
-  stwio r9, 4(r8)
-
-	ret
 
 .global init_pushbuttons
 init_pushbuttons:
@@ -40,8 +23,8 @@ init_lego:
 	movia r9, 0x07F557FF       # Set motor, threshold and sensors bits to output, set state and sensor valid bits to inputs
 	stwio r9, 4(r8)
 
-	movia  r10,  0xFABFABFF    # Turn all motors off, enable sensors 0, 1, 2
-  stwio  r10,  0(r8)
+	movia r10, 0xFABFABFF    # Turn all motors off, enable sensors 0, 1, 2
+  stwio r10, 0(r8)
 
   movia r10, STATE_MODE      # Enable state mode
   stwio r10, 0(r8)

@@ -1,6 +1,7 @@
 ### Nov 26th ###
 Paulo:
  - Implemented handling lego controller interrupts, recognizing between sensors, etc.
+ - Implemented beeping the speaker when a target is hit with the launcher.
 
 ### Nov 21st ###
 Paulo:

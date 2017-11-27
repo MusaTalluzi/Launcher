@@ -38,40 +38,35 @@ BUTTON_INTERRUPT:
 		# Interrupt service routine starts here at 0x20
 		movia et, ADDR_PUSHBUTTONS
 		ldwio r16, 12(et)		# Get edge capture register to know which button interrupted
-		andi r4, r16, 0x1		# Check button0:
+		andi r4, r16, 0x1		# Check button 0
 		bne r4, r0, LAUNCH
 
-		andi r4, r16, 0x2		# Check button1:
+		andi r4, r16, 0x2		# Check button 1
 		bne r4, r0, STEER_LEFT
 
-		andi r4, r16, 0x4		# Check button2:
+		andi r4, r16, 0x4		# Check button 2
 		bne r4, r0, STEER_RIGHT
 
-		# Else, just CONT:
-		br CONT
+		# Otherwise just continue
+		br CONTINUE_BUTTON_INTERRUPT
 
 		LAUNCH:
 			call launch
-			br CONT
+			br CONTINUE_BUTTON_INTERRUPT
 
 		STEER_LEFT:
 			call steer_left
-			br CONT
+			br CONTINUE_BUTTON_INTERRUPT
 
 		STEER_RIGHT:
 			call steer_right
-			br CONT
+			br CONTINUE_BUTTON_INTERRUPT
 
-		CONT:
+		CONTINUE_BUTTON_INTERRUPT:
 		movi r16, 0xF			# Clear edge capture register to prevent unexpected interrupt
 		stwio r16, 12(et)
 		movi r16, 1				# Turn on interrupts
 		wrctl ctl0, r16
-
-		#addi r16, r16, 1	# Decrement r16
-		#add r4, r16, r0 	# Display content of r16 at HEX0
-		#movia r5, HEX0
-		#call display
 
 		/* Pop pushed registered from stack */
 		ldw ra, 8(sp)
@@ -121,7 +116,8 @@ LEGO_INTERRUPT:
 	br FINISH_LEGO # Otherwise the incorrect target was hit
 
 	CORRECT_TARGET:
-		addi r16, r16, 1 # Increment player 1 score
+		addi r16, r16, 1 	# Increment player 1 score
+		call beep 				# Beep the speakers
 
 	FINISH_LEGO:
 		movi r4, r4, 0xFFFFFFFF

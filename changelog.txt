@@ -1,21 +1,26 @@
+### Nov 26th ###
+Paulo:
+ - Implemented handling lego controller interrupts, recognizing between sensors, etc.
+ - Implemented beeping the speaker when a target is hit with the launcher.
+
 ### Nov 21st ###
-Paulo: 
+Paulo:
  - Implemented the code to launch a projectile
  - Modified the timer to accept an input
  - Implemented ISR handling for the timer
 
-Musa: 
+Musa:
  - Implemented steering the launcher
  - Enabled nested interrupts
 
 ### Nov 20th ###
-Paulo: 
+Paulo:
  - Built the launcher and control mechanisms
  - Began work on implementing the lego controller
  - Finalized the project proposal
 
 ### Nov 14th ###
-Paulo & Musa: 
+Paulo & Musa:
  - Implemented the display controller
  - Set up the timer + interrupts
  - Set up the button control + interrupts

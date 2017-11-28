@@ -11,6 +11,9 @@
 # --- TIMER --- #
 .equ TIMER1, 0xFF202000
 
+# --- PS2 KEYBOARD CONTROLLER 1--- *
+.equ PS2_CONTROLLER1_ADDR, 0xFF200100
+
 .global init_pushbuttons
 init_pushbuttons:
 	movia r8, ADDR_PUSHBUTTONS
@@ -42,4 +45,11 @@ init_lego:
 init_timer:
 	movia r8, TIMER1
 	stwio r0, 0(r8) 		# Clear timeout bit
+	ret
+
+.global init_keyboard:
+init_keyboard:
+	movia r8, PS2_CONTROLLER1_ADDR
+	movi r9, 0xF9			# Set all keys Make
+	stwio r9, 0(r8)	
 	ret

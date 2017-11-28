@@ -2,6 +2,7 @@
 .equ HEX0, 0xFF200020
 .equ ADDR_PUSHBUTTONS, 0xFF200050
 .equ ADDR_JP2, 0xFF200070
+.equ PS2_CONTROLLER1_ADDR, 0xFF200100
 
 # Interrupt service routine starts here at 0x20
 .section .exceptions, "ax"
@@ -14,16 +15,28 @@
 	stw r16, 12(sp)
 
 	rdctl et, ctl4				# Read in ipending to check the source of interrupt
+	
+	# Check if interrupt from IRQ0 (timer):
 	movi r16, 0x1
-	andi et, et, 0x1			# Check if interrupt from IRQ0 (timer)
+	andi et, et, 0x1			
 	beq et, r16, TIMER_1_INTERRUPT
 
+	# Check if interrupt from IRQ1 (bushbuttons):
 	rdctl et, ctl4
-	andi et, et, 0x2			# Check if interrupt from IRQ1 (bushbuttons)
+	andi et, et, 0x2			
 	movi r16, 0x2
 	beq et, r16, BUTTON_INTERRUPT
-
-	br TIMER_1_INTERRUPT # Wasn't a button interrupt, go to the timer1 handler
+	
+	# Check if interrupt from IRQ7 (PS2 Keyboard):
+	rdctl et, ctl4
+	andi et, et, 0xF0		
+	movi r16, 0xF0
+	beq et, r16, KEYBOARD_INTERRUPT
+	
+	# Unknown interrupt, exit:
+	br EXIT
+	
+	# br TIMER_1_INTERRUPT # Wasn't a button interrupt, go to the timer1 handler
 
 BUTTON_INTERRUPT:
 		# Push r4, r5 and ra to the stack:
@@ -83,22 +96,62 @@ TIMER_1_INTERRUPT:
 	movia et, TIMER1
 	stwio r0, 0(et) 		# Clear timeout bit
 
-	#ldwio r9, 0(r8)			# Clear timeout bit
+	#ldwio r9, 0(r8)		# Clear timeout bit
 	#movia r10, ~1
 	#and r9, r9, r10
 	#stwio r9, 0(r8) 
 
-	movia et, ADDR_JP2    # et contains the address of the lego controller
+	movia et, ADDR_JP2		# et contains the address of the lego controller
 	/* Save registers we will use */
 	addi sp, sp, -4
 	stw r5, 0(sp)
 
-	movia r5, 0xFABFABFF  # Turn off all the motors, enable sensors 0, 1, 2
+	movia r5, 0xFABFABFF	# Turn off all the motors, enable sensors 0, 1, 2
 	stwio r5, 0(et)
 
 	/* Restore the saved register */
 	ldw r5, 0(sp)
 	addi sp, sp, 4
+
+	br EXIT
+	
+KEYBOARD_INTERRUPT:
+	/* Save registers we will use here */
+	addi sp, sp, -16
+	stw r5, 0(sp)
+	stw r4, 4(sp)
+	stw ra, 8(sp)
+	stw r6, 12(sp)
+		
+	movia et, PS2_CONTROLLER1_ADDR
+	ldwio r4, 0(et)			# Read base register
+	movi r5, 0xF000			# Ensure data is valid, if not exist
+	andi r5, r4, r5
+	beq r5, r0, EXIT		
+	
+	# Data is valid, see source key:
+	movi r5, 6B				# Left arrow, steer left (TODO: should we also check E0?)
+	add r6, r4, r0
+	andi r6, 0xFF
+	beq r5, r6, STEER_LEFT
+	
+	movi r5, 74				# Right arrow, steer left (TODO: should we also check E0?)
+	add r6, r4, r0
+	andi r6, 0xFF
+	beq r5, r6, STEER_RIGHT
+	
+	movi r5, 5A				# Right arrow, steer left (TODO: should we also check E0?)
+	add r6, r4, r0
+	andi r6, 0xFF
+	beq r5, r6, LAUNCH
+	
+	# If none of these, just exit:
+	
+	/* Pop pushed registered from stack */
+	ldw ra, 8(sp)
+	ldw r4, 4(sp)
+	ldw r5, 0(sp)
+	addi sp, sp, 12
 
 	br EXIT
 

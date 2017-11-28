@@ -145,6 +145,11 @@ KEYBOARD_INTERRUPT:
 	andi r6, 0xFF
 	beq r5, r6, KEYBOARD_LAUNCH
 
+	movi r5, 29				# Space; switch player, set target
+	add r6, r4, r0
+	andi r6, 0xFF
+	beq r5, r6, PREPARE_TURN
+
 	# If none of these, just exit:
 	br KEYBOARD_CONT
 
@@ -158,6 +163,13 @@ KEYBOARD_INTERRUPT:
 
 		KEYBOARD_STEER_RIGHT:
 			call steer_right
+			br KEYBOARD_CONT
+
+		PREPARE_TURN:
+			xori r23, r23, 1
+			call get_random_target()
+			addi r22, r0, 1
+			sll r22, r22, r2 # Store 1 shifted over by the target number
 			br KEYBOARD_CONT
 
 	KEYBOARD_CONT:
@@ -185,13 +197,21 @@ LEGO_INTERRUPT:
 
 		movia r5, SENSOR_MASK
 		and r4, r4, r5	# mask bit 27 & 28 (sensors 0 and 1)
+		srli r4, r4, 27
 
 		beq r4, r22, CORRECT_TARGET # Branch if the target hit is the one that was indicated (r22 holds the target)
 		br FINISH_LEGO # Otherwise the incorrect target was hit
 
 		CORRECT_TARGET:
-			addi r20, r21, 1 	# Increment player 1 score
 			call beep 				# Beep the speakers
+
+			beq r23, r0, PLAYER_1
+			addi r21, r21, 1 	# Otherise, increment player 2 score
+			br FINISH_LEGO
+
+			PLAYER_1:
+				addi r20, r20, 1 	# Increment player 1 score
+				br FINISH_LEGO
 
 		FINISH_LEGO:
 			movi r4, r4, 0xFFFFFFFF

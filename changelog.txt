@@ -1,6 +1,14 @@
+### Nov 28th ###
+Paulo & Musa:
+ - Began implementation of two player mode for the launcher game.
+    - 2 player score tracking
+    - Current turn tracking
+
 ### Nov 27th ###
 Paulo:
  - Implemented c function for random number generation. (used for target selection)
+Musa:
+  - Implemented keyboard control for the launcher.
 
 ### Nov 26th ###
 Paulo:

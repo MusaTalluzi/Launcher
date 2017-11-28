@@ -3,6 +3,7 @@
 .equ IRQ_JP2, 0x1000
 .equ IRQ_PS2_KEYBOARD, 1 << 7
 .equ HEX0, 0xFF200020
+.equ HEX4, 0xFF200030
 
 /*
 * r20: Contains the score for player 1
@@ -36,14 +37,15 @@ _start:
 	ori r16, r16, 1
 	wrctl ctl0, r16
 
-	## Start game:
-	movi r16, 0				# Stores 5 in r16
-	add r4, r16, r0 		# Display content of r16 at HEX0
-	movia r5, HEX0
-	call display
-
-	movi r17, 5
-
 LOOP:
 	# TODO: display the score and the player's turn
+	slli r4, r20, 8
+	or r4, r4, r21
+	movia r5, HEX0
+	call display		# Set player 1 score on HEX1, player 2 score on HEX0
+
+	add r4, r0, r23	# Display the target on HEX4
+	movia r5, HEX4
+	call display
+
 	br LOOP

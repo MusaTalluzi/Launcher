@@ -116,7 +116,7 @@ LEGO_INTERRUPT:
 	br FINISH_LEGO # Otherwise the incorrect target was hit
 
 	CORRECT_TARGET:
-		addi r16, r16, 1 	# Increment player 1 score
+		addi r20, r20, 1 	# Increment player 1 score
 		call beep 				# Beep the speakers
 
 	FINISH_LEGO:

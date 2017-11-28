@@ -8,7 +8,7 @@
 .equ STATE_MODE, 		0xFADFFFFF
 .equ ADDR_JP2_EDGE, 0xFF20007C  # Address Edge Capture register GPIO JP2
 
-# --- TIMER --- *
+# --- TIMER --- #
 .equ TIMER1, 0xFF202000
 
 .global init_pushbuttons

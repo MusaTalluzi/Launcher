@@ -7,6 +7,7 @@
 * r20: Contains the score for player 1
 * r21: Contains the score for player 2
 * r22: Contains the randomly generated target number (values match with the lego edge register)
+* r23: Contains the current player (0 = player 1, 1 = player 2)
 */
 .global _start
 _start:
@@ -14,6 +15,11 @@ _start:
 	call init_pushbuttons
 	call init_lego
 	call init_timer
+
+	# Initialize all of the tracked registers
+	add r20, r0, r0
+	add r21, r0, r0
+	addi r23, r0, 1 #	Start with player 2, will flip to player 1 the first time the start button is pressed
 
 	rdctl r16, ctl3
 	ori r16, r16, IRQ_TIMER1			# Set IRQ0 to enable TIMER interrupts
@@ -33,4 +39,5 @@ _start:
 	movi r17, 5
 
 LOOP:
+	# TODO: display the score and the player's turn
 	br LOOP

@@ -133,19 +133,38 @@ KEYBOARD_INTERRUPT:
 	movi r5, 6B				# Left arrow, steer left (TODO: should we also check E0?)
 	add r6, r4, r0
 	andi r6, 0xFF
-	beq r5, r6, STEER_LEFT
+	beq r5, r6, KEYBOARD_STEER_LEFT
 	
 	movi r5, 74				# Right arrow, steer left (TODO: should we also check E0?)
 	add r6, r4, r0
 	andi r6, 0xFF
-	beq r5, r6, STEER_RIGHT
+	beq r5, r6, KEYBOARD_STEER_RIGHT
 	
 	movi r5, 5A				# Right arrow, steer left (TODO: should we also check E0?)
 	add r6, r4, r0
 	andi r6, 0xFF
-	beq r5, r6, LAUNCH
+	beq r5, r6, KEYBOARD_LAUNCH
 	
 	# If none of these, just exit:
+	br KEYBOARD_CONT
+	
+		KEYBOARD_LAUNCH:
+		call launch
+		br KEYBOARD_CONT
+		
+		KEYBOARD_STEER_LEFT:
+			call steer_left
+			br KEYBOARD_CONT
+
+		KEYBOARD_STEER_RIGHT:
+			call steer_right
+			br KEYBOARD_CONT
+
+	KEYBOARD_CONT:
+		movi r16, 0xF			# Clear edge capture register to prevent unexpected interrupt
+		stwio r16, 12(et)
+		movi r16, 1				# Turn on interrupts
+		wrctl ctl0, r16
 	
 	/* Pop pushed registered from stack */
 	ldw ra, 8(sp)

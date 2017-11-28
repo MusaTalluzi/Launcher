@@ -1,3 +1,7 @@
+### Nov 27th ###
+Paulo:
+ - Implemented c function for random number generation. (used for target selection)
+
 ### Nov 26th ###
 Paulo:
  - Implemented handling lego controller interrupts, recognizing between sensors, etc.

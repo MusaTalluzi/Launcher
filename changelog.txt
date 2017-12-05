@@ -1,3 +1,7 @@
+ ### Dec 3rd ###
+ Paulo:
+  - Implemented selecting a timed game mode
+
 ### Dec 1st ###
 Paulo & Musa:
  - Completed implementation of a two player mode

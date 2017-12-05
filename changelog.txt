@@ -1,6 +1,10 @@
+### Dec 4th ###
+Paulo:
+ - Implemented a timed game mode where a player has 10s to aim + shoot
+
  ### Dec 3rd ###
  Paulo:
-  - Implemented selecting a timed game mode
+  - Implemented selecting a timed game mode using switch 0
 
 ### Dec 1st ###
 Paulo & Musa:

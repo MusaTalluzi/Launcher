@@ -32,8 +32,8 @@ steer_right:
   addi sp, sp, -4
   stw ra, 0(sp)
 
-  movia r8, ADDR_JP2			# r8 contains the address of the controller
-  movia r9, MOTOR1_FORWARD		# Turn on motor 1 to the right, enable sensors 0, 1, 2
+  movia r8, ADDR_JP2			  # r8 contains the address of the controller
+  movia r9, MOTOR1_FORWARD  # Turn on motor 1 to the right, enable sensors 0, 1, 2
   stwio r9, 0(r8)
 
   movia r4, STEER_TIME_PERIOD   # r4 contains the time the motors will run for
@@ -50,8 +50,8 @@ steer_left:
   addi sp, sp, -4
   stw ra, 0(sp)
 
-  movia r8, ADDR_JP2			# r8 contains the address of the controller
-  movia r9, MOTOR1_BACKWARD		# Turn on motor 1 to the right, enable sensors 0, 1, 2
+  movia r8, ADDR_JP2			    # r8 contains the address of the controller
+  movia r9, MOTOR1_BACKWARD	  # Turn on motor 1 to the right, enable sensors 0, 1, 2
   stwio r9, 0(r8)
 
   movia r4, STEER_TIME_PERIOD   # r4 contains the time the motors will run for

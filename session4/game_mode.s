@@ -11,7 +11,6 @@ get_game_mode:
   stw r8, 4(sp)
 	stw r9, 8(sp)
 
-
   movia r8, SWITCHES
   ldwio r9, 0(r8)     # Read the switches
 

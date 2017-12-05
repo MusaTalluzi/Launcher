@@ -28,28 +28,27 @@ main:
 
 	# Enable devices interrupts:
 	rdctl r16, ctl3
-	ori r16, r16, IRQ_TIMER1			# Set IRQ0 to enable TIMER interrupts
+	ori r16, r16, IRQ_TIMER1				# Set IRQ0 to enable TIMER interrupts
 	ori r16, r16, IRQ_PUSHBUTTONS		# Set IRQ1 to enable PUSH_BUTTONS interrupts
-	ori r16, r16, IRQ_JP2				# Set IRQ12 to enable JP2 interrupts
-	ori r16, r16, IRQ_PS2_KEYBOARD		# Set IRQ7 to enable PS2 keyboard interrupts
-	wrctl ctl3, r16						# Enable previous interrupts
+	ori r16, r16, IRQ_JP2						# Set IRQ12 to enable JP2 interrupts
+	ori r16, r16, IRQ_PS2_KEYBOARD	# Set IRQ7 to enable PS2 keyboard interrupts
+	wrctl ctl3, r16		# Enable previous interrupts
 
-	rdctl r16, ctl0						# Enable global interrupts
+	rdctl r16, ctl0		# Enable global interrupts
 	ori r16, r16, 1
 	wrctl ctl0, r16
 
 LOOP:
-	# TODO: display the score and the player's turn
 	slli r4, r20, 8
 	or r4, r4, r21
 	movia r5, HEX0
 	call display		# Set player 1 score on HEX1, player 2 score on HEX0
-	
+
 	slli r4, r22, 4
 	movi r17, 1			# Print player number instead of 0,1
 	sll r17, r17, r23
-	or r4, r4, r17	
-	movia r5, HEX4 # Display the target on HEX5, display player on HEX4
+	or r4, r4, r17
+	movia r5, HEX4 	# Display the target on HEX5, display player on HEX4
 	call display
 
 	br LOOP

@@ -22,7 +22,7 @@
 	andi et, et, 0x1
 	beq et, r16, TIMER_1_INTERRUPT
 
-	# Check if interrupt from IRQ1 (bushbuttons):
+	# Check if interrupt from IRQ1 (push buttons):
 	rdctl et, ctl4
 	andi et, et, 0x2
 	movi r16, 0x2
@@ -43,8 +43,6 @@
 	# Unknown interrupt, exit:
 	br EXIT
 
-	# br TIMER_1_INTERRUPT # Wasn't a button interrupt, go to the timer1 handler
-
 BUTTON_INTERRUPT:
 		# Push r4, r5 and ra to the stack:
 		/* Save registers we will use here */
@@ -56,16 +54,17 @@ BUTTON_INTERRUPT:
 		# Interrupt service routine starts here at 0x20
 		movia et, ADDR_PUSHBUTTONS
 		ldwio r16, 12(et)		# Get edge capture register to know which button interrupted
-		andi r4, r16, 0x1		# Check button0:
+
+		andi r4, r16, 0x1		# Check if button0
 		bne r4, r0, LAUNCH
 
-		andi r4, r16, 0x2		# Check button1:
+		andi r4, r16, 0x2		# Check if button1
 		bne r4, r0, STEER_LEFT
 
-		andi r4, r16, 0x4		# Check button2:
+		andi r4, r16, 0x4		# Check if button2
 		bne r4, r0, STEER_RIGHT
 
-		# Else, just CONT:
+		# Otherwise, just CONT:
 		br CONT
 
 		LAUNCH:
@@ -138,20 +137,13 @@ KEYBOARD_INTERRUPT:
 	movia r5, 0xF000			# Ensure data is valid, if not exist
 	and r5, r4, r5
 	beq r5, r0, EXIT
-	
-	/*# If read value is F0, empty buffer:
-	movi r6, 0xF0
-	movia r5, 0xFF
-	and r5, r4, r5
-	beq r5, r6, EMPTY_BUF*/
-
 
 	# If read value is E0, read next one:
 	movi r6, 0xE0
 	movia r5, 0xFF
 	and r5, r4, r5
 	beq r5, r6, READ_CHAR
-	
+
 	# Data is valid, see source key:
 	movi r5, 0x6B				# Left arrow, steer left (TODO: should we also check E0?)
 	add r6, r4, r0
@@ -196,6 +188,11 @@ KEYBOARD_INTERRUPT:
 			call get_random_target
 			addi r22, r0, 1
 			sll r22, r22, r2 # Store 1 shifted over by the target number
+
+			call get_game_mode
+			beq r2, r0, KEYBOARD_CONT # Continue if game mode = 0 (not timed)
+
+			# TODO: start a timer here
 			br KEYBOARD_CONT
 
 		EMPTY_BUF:
@@ -204,7 +201,7 @@ KEYBOARD_INTERRUPT:
 			and r5, r4, r5
 			bne r5, r0, EMPTY_BUF
 			br KEYBOARD_CONT
- 
+
 	KEYBOARD_CONT:
 		# Delay for a while:
 		movia r4, 1 << 20 # delay for 0.1s

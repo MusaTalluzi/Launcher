@@ -5,7 +5,7 @@
 # --- LEGO CONTROLLER --- #
 .equ ADDR_JP2, 			0xFF200070	# Address GPIO JP2
 .equ ADDR_JP2_IRQ, 	1 << 12   	# IRQ line for GPIO JP2 (IRQ12)
-.equ STATE_MODE, 	0xFADFFFFF #0xF78FABFF	
+.equ STATE_MODE, 	0xFADFFFFF #0xF78FABFF
 .equ ADDR_JP2_EDGE, 0xFF20007C  # Address Edge Capture register GPIO JP2
 
 # --- TIMER --- #
@@ -24,45 +24,45 @@ init_pushbuttons:
 
 .global init_lego
 init_lego:
-	movia r8, ADDR_JP2       # r8 contains the address of the controller
-	movia r9, 0x07F557FF     # Set motor, threshold and sensors bits to output, set state and sensor valid bits to inputs
+	movia r8, ADDR_JP2      # r8 contains the address of the controller
+	movia r9, 0x07F557FF    # Set motor, threshold and sensors bits to output, set state and sensor valid bits to inputs
 	stwio r9, 4(r8)
 
-  movia r10, 0xfabffbff    # Turn all motors off, enable sensors 0 and set threshold to 5
+  movia r10, 0xfabffbff   # Turn all motors off, enable sensors 0 and set threshold to 5
   stwio r10, 0(r8)
 
-  movia r10, 0xfabfefff    # Turn all motors off, enable sensors 1 and set threshold to 5
+  movia r10, 0xfabfefff   # Turn all motors off, enable sensors 1 and set threshold to 5
   stwio r10, 0(r8)
 
-  movia r10, 0xfabfbfff    # Turn all motors off, enable sensors 2 and set threshold to 5
+  movia r10, 0xfabfbfff   # Turn all motors off, enable sensors 2 and set threshold to 5
   stwio r10, 0(r8)
 
-  movia r10, 0xfadfffff    # Enable state mode
+  movia r10, 0xfadfffff   # Enable state mode
   stwio r10, 0(r8)
 
-  movia r10, 0xF8000000    # Enable interrupts for the sensors
+  movia r10, 0xF8000000   # Enable interrupts for the sensors
   stwio r10, 8(r8)
 
-  #movia r10, 0xFFFFFFFF		 # Clear the edge register
+  #movia r10, 0xFFFFFFFF	# Clear the edge register
   #stwio r10, 12(r8)
 	ret
 
 .global init_timer
 init_timer:
 	movia r8, TIMER1
-	stwio r0, 0(r8) 		# Clear timeout bit
+	stwio r0, 0(r8)		# Clear timeout bit
 	ret
 
 .global init_keyboard
 init_keyboard:
 	movia r8, PS2_CONTROLLER1_ADDR
 
-	#movi r9, 0xFF 			# Reset keyboard
+	#movi r9, 0xFF 		# Reset keyboard
 	#stwio r9, 4(r8)
 
 	movi r9, 0xF9			# Set all keys Make
 	stwio r9, 0(r8)
-	
+
 	movi r9, 1				# enable interrupts from keyboard
 	stwio r9, 4(r8)
 	ret

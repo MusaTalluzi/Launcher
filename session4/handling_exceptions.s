@@ -4,6 +4,7 @@
 .equ ADDR_JP2, 0xFF200070
 .equ PS2_CONTROLLER1_ADDR, 0xFF200100
 .equ SENSOR_MASK, 3 << 27
+.equ TURN_TIME, 1 << 30 # Aprox. 10s
 
 # Interrupt service routine starts here at 0x20
 .section .exceptions, "ax"
@@ -192,12 +193,15 @@ KEYBOARD_INTERRUPT:
 			call get_game_mode
 			beq r2, r0, KEYBOARD_CONT # Continue if game mode = 0 (not timed)
 
-			# TODO: start a timer here
+			# Start the turn timer
+			movia r4, TURN_TIME
+			call turn_timer  # Not saving regs since they will not be used again
+
 			br KEYBOARD_CONT
 
 		EMPTY_BUF:
 			ldwio r4, 0(et)			# Read base register
-			movia r5, 0xF000	    # If data valid, keep reading
+			movia r5, 0xF000	  # If data valid, keep reading
 			and r5, r4, r5
 			bne r5, r0, EMPTY_BUF
 			br KEYBOARD_CONT
@@ -231,9 +235,10 @@ KEYBOARD_INTERRUPT:
 
 LEGO_INTERRUPT:
 		/* Save registers we will use */
-		addi sp, sp, -8
+		addi sp, sp, -12
 		stw r4, 0(sp)
 		stw r5, 4(sp)
+		stw ra, 8(sp)
 
 		movia et, ADDR_JP2
 		ldwio r4, 12(et) # Get the edge register
@@ -246,6 +251,9 @@ LEGO_INTERRUPT:
 		br FINISH_LEGO # Otherwise the incorrect target was hit
 
 		CORRECT_TARGET:
+			call check_turn_timer
+			bne r2, r0, FINISH_LEGO # Check if the turn timer has completed
+
 			#call beep 				# Beep the speakers
 
 			beq r23, r0, PLAYER_1
@@ -261,9 +269,10 @@ LEGO_INTERRUPT:
 			stwio r4, 12(et) # Clear the edge register
 
 		/* Restore the saved register */
+		ldw ra, 8(sp)
 		ldw r5, 4(sp)
 		ldw r4, 0(sp)
-		addi sp, sp, 8
+		addi sp, sp, 12
 
 		br EXIT
 

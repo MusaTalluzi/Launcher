@@ -1,3 +1,10 @@
+### Dec 1st ###
+Paulo & Musa:
+ - Completed implementation of a two player mode
+ - Tested and verified sensor interrupts occurring correctly
+ - Tested & verified score tracking and player scores works correctly
+ - Tested & verified keyboard control of the launcher works correctly
+
 ### Nov 28th ###
 Paulo & Musa:
  - Began implementation of two player mode for the launcher game.
